@@ -6,7 +6,7 @@ const babel = require('gulp-babel');
 const eslint = require('gulp-eslint');
 gulp.task('default', ['test:unit']);
 
-gulp.task('pre-commit', ['test:unit']);
+gulp.task('pre-commit', ['build:lint', 'build:babel']);
 
 gulp.task('test:unit', ['build:lint'], () => {
   return gulp.src('test/**/*.js', {read: false})
