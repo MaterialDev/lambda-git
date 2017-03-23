@@ -20,7 +20,12 @@ gulp.task('build:lint', () => {
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('build:babel', (callback) => {
+gulp.task('build:copyGit', () => {
+  return gulp.src('./git-2.4.3.tar')
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('build:babel', ['build:copyGit'], (callback) => {
   gulp.src(['src/**/*.js'], {base: './src'})
     .pipe(sourcemaps.init())
     .pipe(babel({presets: ['es2015']}))
