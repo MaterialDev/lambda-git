@@ -1,10 +1,11 @@
 {
-  "name": "lambda-git",
-  "version": "0.1.0",
+  "name": "@material-dev/lambda-git",
+  "version": "0.0.1",
   "description": "A git binary installed through NPM, for use with AWS Lambda",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
-    "test": "bats test.sh"
+    "test": "gulp test:unit",
+    "prepublish": "gulp build:babel"
   },
   "repository": {
     "type": "git",
@@ -16,16 +17,18 @@
     "aws",
     "binary"
   ],
-  "author": "Tim Perry <pimterry@gmail.com>",
+  "author": "J",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/pimterry/lambda-git/issues"
-  },
-  "homepage": "https://github.com/pimterry/lambda-git#readme",
   "dependencies": {
     "tar-fs": "^1.14.0"
   },
   "devDependencies": {
-    "bats": "^0.4.2"
+    "bats": "^0.4.2",
+    "git-guppy": "^2.0.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^3.0.1",
+    "gulp-mocha": "^4.1.0",
+    "gulp-sourcemaps": "^2.4.1"
   }
 }
