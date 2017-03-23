@@ -15,29 +15,44 @@ const fs = require('fs');
  * instead including `binPath` (the path to the binaries folder) and `env`,
  * a set of required environmental variables.
  */
-module.exports = function installGit(options) {
+module.exports = function installGit(options, callback) {
   options = options || {}; //eslint-disable-line no-param-reassign
 
   const targetDirectory = options.targetDirectory || '/tmp/git';
   const updateEnv = (options.updateEnv !== undefined) ? options.updateEnv : true;
 
   fs.createReadStream(path.join(__dirname, 'git-2.4.3.tar'))
-    .pipe(tar.extract(targetDirectory));
+    .pipe(tar.extract(targetDirectory))
+    .on('end', (err) => {
+      const GIT_TEMPLATE_DIR = path.join(targetDirectory, 'usr/share/git-core/templates');
+      const GIT_EXEC_PATH = path.join(targetDirectory, 'usr/libexec/git-core');
+      const binPath = path.join(targetDirectory, 'usr/bin');
 
-  const GIT_TEMPLATE_DIR = path.join(targetDirectory, 'usr/share/git-core/templates');
-  const GIT_EXEC_PATH = path.join(targetDirectory, 'usr/libexec/git-core');
-  const binPath = path.join(targetDirectory, 'usr/bin');
+      if (updateEnv) {
+        process.env.PATH = `${process.env.PATH}:${binPath}`;
+        process.env.GIT_TEMPLATE_DIR = GIT_TEMPLATE_DIR;
+        process.env.GIT_EXEC_PATH = GIT_EXEC_PATH;
+      }
+      if (isFunction(callback)) {
+        return callback(err, {
+          binPath: binPath,
+          env: {
+            GIT_TEMPLATE_DIR: GIT_TEMPLATE_DIR,
+            GIT_EXEC_PATH: GIT_EXEC_PATH
+          }
+        });
+      }
+      return Promise.resolve({
+        binPath: binPath,
+        env: {
+          GIT_TEMPLATE_DIR: GIT_TEMPLATE_DIR,
+          GIT_EXEC_PATH: GIT_EXEC_PATH
+        }
+      });
+    });
+};
 
-  if (updateEnv) {
-    process.env.PATH = `${process.env.PATH}:${binPath}`;
-    process.env.GIT_TEMPLATE_DIR = GIT_TEMPLATE_DIR;
-    process.env.GIT_EXEC_PATH = GIT_EXEC_PATH;
-  }
-  return {
-    binPath: binPath,
-    env: {
-      GIT_TEMPLATE_DIR: GIT_TEMPLATE_DIR,
-      GIT_EXEC_PATH: GIT_EXEC_PATH
-    }
-  };
+const isFunction = (functionToCheck) => {
+  const getType = {};
+  return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 };
