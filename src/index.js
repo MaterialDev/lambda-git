@@ -23,7 +23,7 @@ module.exports = function installGit(options, callback) {
 
   fs.createReadStream(path.join(__dirname, 'git-2.4.3.tar'))
     .pipe(tar.extract(targetDirectory))
-    .on('end', (err) => {
+    .on('finish', (err) => {
       const GIT_TEMPLATE_DIR = path.join(targetDirectory, 'usr/share/git-core/templates');
       const GIT_EXEC_PATH = path.join(targetDirectory, 'usr/libexec/git-core');
       const binPath = path.join(targetDirectory, 'usr/bin');
