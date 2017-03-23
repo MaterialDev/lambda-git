@@ -7,6 +7,9 @@
     "test": "gulp test:unit",
     "prepublish": "gulp build:babel"
   },
+  "engines": {
+    "node": ">6.6.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MaterialDev/lambda-git"
